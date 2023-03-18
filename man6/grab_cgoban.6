@@ -1,0 +1,23 @@
+.TH grab_cgoban 6 "6 December 1997"
+.SH NAME
+grab_cgoban \- take a snapshot of a cgoban board
+.SH SYNOPSIS
+.LP
+.B grab_cgoban
+[
+.IB filename .gif
+]
+.SH DESCRIPTION
+This shell script looks for a cgoban window, grabs the displayed Go
+board and saves it as a GIF file.  It can use imagemagick or pbmplus
+to convert the image to GIF.  If it can't find either, it will save it
+as an XWD image instead.  In that case it will add the extension
+.B .xwd
+to the filename supplied.
+.SH AUTHOR
+Anthony Thyssen <anthony@cit.gu.edu.au>.
+.LP
+This manual page was provided by Richard Braakman <dark@xs4all.nl>.
+
+
+

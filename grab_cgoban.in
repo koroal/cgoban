@@ -1,0 +1,84 @@
+#! @SHELL@
+#
+# grab_cgoban    save.gif
+#
+# Look for a cgoban window, grab the displayed GO board and save it
+# as a gif file.
+#
+# Anthony Thyssen   <anthony@cit.gu.edu.au>    24 October 1995
+#
+# The location of board in CGoban Window
+# X=15 Y=78 S=393        # perfect fit -- wood only
+# X=14 Y=77 S=395        # one pixel more (testing)
+  X=8  Y=70 S=410        # green background frame
+
+TMP=/tmp/grab_cgoban.$$
+trap "rm -f $TMP; exit 0" 0
+
+if [ $# -ne 1 ]; then
+  echo >&2 "Usage: grab_cgoban save.gif"
+  exit;
+fi
+
+# get the windows ID - ignore the Control or tools window if present
+window=`xwininfo -tree -root |
+          sed -n '/Basicwin/!d; /C[Gg]oban/d; s/^ *\(0x[^ ]*\).*/\1/p'`
+
+# How many boards did we find
+num=`echo $window | wc -w`
+if [ $num -lt 1 ]; then
+  echo >&2 "No CGoban Board found! - aborting"
+  exit 10
+fi
+if [ $num -gt 1 ]; then
+  echo >&2 "Multiple CGoban Boards found! - aborting"
+  exit 10
+fi
+
+# Figure out image filters to use!
+case "`type convert`" in
+*'not found'*)
+  case "`type ppmtogif`" in
+  *'not found'*)
+    case "`type pnmtogif`" in
+    *'not found'*)
+       FILTER=XWD ;;
+    *) FILTER=PBMPLUS_OLD ;;
+    esac ;;
+  *) FILTER=PBMPLUS ;;
+  esac ;;
+*) FILTER=IMAGEMAGICK ;;
+esac
+
+# for debugging
+#echo "filtering image with $FILTER"
+
+# grab the image and filter appropriately
+case "$FILTER" in
+IMAGEMAGICK)
+  # note ImageMagick can output to given files suffix
+  # in fact it relies on a suffix to the file type
+  xwd -id $window |
+    convert  -crop ${S}x${S}+${X}+${Y} - $1
+  ;;
+PBMPLUS)
+  xwd -id $window |
+    xwdtopnm 2>/dev/null |
+      pnmcut $X $Y $S $S |
+	ppmtogif 2>/dev/null > $1
+  ;;
+PBMPLUS_OLD)
+  xwd -id $window |
+    xwdtopnm 2>/dev/null |
+      pnmcut $X $Y $S $S |
+	pnmtogif 2>/dev/null > $1
+  ;;
+XWD)
+  echo >&2 "WARNING: unable to find a image filter package"
+  echo >&2 "Dumping a XWD image to \"$1.xwd\" instead of GIF format"
+  xwd -id $window > $1.xwd
+  ;;
+esac
+
+# for Debugging
+#xv $1 &

@@ -1,0 +1,20 @@
+#! /bin/sh
+
+echo "calling aclocal..."
+# aclocal creates aclocal.m4
+aclocal
+
+echo "calling autoheader..."
+# autoheaders creates config.h.in
+autoheader
+
+echo "calling automake..."
+# automake creates a Makefile.in for every Makefile.am
+automake
+
+echo "calling autoconf..."
+# autoconf creates the configure script
+autoconf
+
+echo "cleaning config.cache and config.status..."
+rm -f config.cache config.status

@@ -1,0 +1,52 @@
+.\" I really don't like to write man pages.
+.ds ]W Complete Goban 1.9.14
+.TH Cgoban 6 "24 October 2002"
+.SH NAME
+cgoban \- X11 Go Toolset
+.SH SYNOPSIS
+.LP
+.B cgoban -help
+.LP
+.B cgoban
+[
+.I <options>
+]
+.SH DESCRIPTION
+Information on the switches is available with
+.B cgoban
+.BR \-help .
+.LP
+One switch that you may want to use is the
+.B cgoban
+.B \-fontHeight
+.I size
+switch.  This switch changes the size of everything that cgoban draws.
+The default is 12; running
+.B cgoban \-fontHeight 14
+will make the board, etc. larger, while
+.B cgoban \-fontHeight 10
+will make it all smaller.
+.LP
+Any of the command line switches can be set instead with an X default.  For
+example, if you want to set black and white to be the default mode, you can
+run complete goban with 
+.B cgoban
+.BR -nocolor ,
+or you can add 
+.B cgoban*color: 0
+to your X defaults.
+.LP
+Cgoban will store a new
+.B .cgobanrc
+file every time you run it.  In this file it will save the current state of
+cgoban.  This is handy; you don't normally have to set command line switches
+since cgoban will remember them in the
+.B .cgobanrc
+file.  However, it is possible that the
+.B .cgobanrc
+file gets some bad data in it.  Just delete the file and then
+you can start from scratch again.
+.SH AUTHOR
+Kevin Sonney ksonney@redhat.com
+.LP
+http://cgoban1.sourceforge.net/

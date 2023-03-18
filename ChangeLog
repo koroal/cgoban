@@ -1,0 +1,28 @@
+Changes for cgoban-1.9.14-0.1
+- New maintainer
+- add spec for RPMs
+- add icon file for desktop entry
+
+Changes for cgoban-1.9.13
+- add grab_cgoban.in to repository, remove grab_cgoban
+- remove files from repository made by the autotools:
+  configure.h.in, Makefile.in
+- reverted upgrade to autoconf 2.5x/automake 1.6x
+  now use autoconf 2.13/automake 1.5
+- use automake for Makefiles
+  - add Makefile.am in the different directories
+  - remove makerule generation from configure.in
+- install grab_cgoban using bin_SCRIPTS macro
+- substitute shell in grab_cgoban from configure
+- make gnugo default gmp client instead of GoDummy
+- remove acconfig.h. Use AH_TOP and AH_TEMPLATE
+  macros instead in configure.in
+- use AC_EXEEXT macro to get .exe extension for cygwin
+  executables
+- use AC_SEARCH_LIB(cos, m) instead of AC_CHECKLIB(m, main).
+  On some platforms -lm is not needed.
+- use AC_PATH_XTRA instead of AC_FIND_X
+- remove INCDIR, LIBDIR from configure.in.
+  This functionality is provided by automake
+- move AC_AIX AC_ISC_POSIX AC_MINIX to right after
+  AC_PROG_CC. autoconf 2.53 complained about this.

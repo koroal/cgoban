@@ -1,0 +1,244 @@
+#for autoconf 2.1x start configure script with next three lines
+
+AC_PREREQ(2.13)
+AC_INIT(src/cgoban.c)
+AM_INIT_AUTOMAKE(cgoban, 1.9.14)
+
+#for autoconf 2.5x start configure script with next four lines
+# AC_PREREQ(2.50)
+# AC_INIT(cgoban, 1.9.13)
+# AC_CONFIG_SRCDIR(src/cgoban.c)
+# AM_INIT_AUTOMAKE
+
+#
+# $Source: /cvsroot/cgoban1/cgoban1/configure.in,v $
+# $Revision: 1.11 $
+# $Date: 2002/11/19 16:46:01 $
+#
+
+# Remember to change these in "README", "TODO", and "cgoban.6" too.
+# DATE must be in DAY MONTH YEAR format.
+
+date="10 23 2002"
+VERSION="1.9.14"
+
+# If we want to upgrade to 2.5x, AH_TOP and AH_TEMPLATE
+# macros can be used
+# AH_TOP text is inserted by autoheader in configure.h.in
+# AH_TOP([
+#/*
+# * configure.h, part of Complete Goban (game program)
+# * Copyright (C) 1995 William Shubert
+# * Copyright (C) 2002 Kevin Sonney
+# *
+# * This program is free software; you can redistribute it and/or modify
+# * it under the terms of the GNU General Public License as published by
+# * the Free Software Foundation; either version 2 of the License, or
+# * (at your option) any later version.
+# *
+# * This program is distributed in the hope that it will be useful,
+# * but WITHOUT ANY WARRANTY; without even the implied warranty of
+# * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# * GNU General Public License for more details.
+# *
+# * You should have received a copy of the GNU General Public License
+# * along with this program; if not, write to the Free Software
+# * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+# *
+# * Original code written by William M. Shubert <wms@igoweb.org>
+# * AutoMake code written by Teun Burgers <arburgers@users.sourceforge.net>
+# * The maintainer can be reached at <ksonney@redhat.com> or
+# *    Kevin Sonney
+# *    1801 Varsity Drive
+# *    Raleigh, NC 27606
+# *    (919) 754-3700 x44112
+# */]
+# )
+# AH_TEMPLATE([DATE],[])
+# AH_TEMPLATE([DATE_FRENCH],[])
+# AH_TEMPLATE([HAVE_H_ERRNO],[])
+# AH_TEMPLATE([HAVE_SOCKETS],[])
+# AH_TEMPLATE([LINUX_SOUND],[
+# LINUX_SOUND should be set to 1 if you have linux-style sound.  Mostly
+# this means that you have "linux/soundcard.h"
+# ])
+# AH_TEMPLATE([SUN_SOUND],[
+# SUN_SOUND should be set to 1 if you have sun sparc-style sound.  Mostly
+# this means that you have "sun/audioio.h".
+# ])
+# AH_TEMPLATE([VERSION],[])
+# AH_TEMPLATE([X11_DISP],[Define X11_DISP to be 1 if you have X11.])
+
+
+######################################################################
+# My own, personal functions.                                        #
+######################################################################
+
+AC_DEFUN(WMS_GET_CFLAGS,
+[AC_MSG_CHECKING([for best CFLAGS argument])
+if test $ac_cv_prog_gcc = yes ; then
+  CFLAGS='-O2 -fomit-frame-pointer'
+else
+  CFLAGS='-O'
+fi
+AC_MSG_RESULT($CFLAGS)
+AC_SUBST(CFLAGS)])
+
+AC_DEFUN(WMS_CHECK_H_ERRNO,
+[AC_MSG_CHECKING([for h_errno])
+AC_TRY_LINK([#include <sys/types.h>
+#include <sys/socket.h>
+#if  HAVE_NETINET_IN_H
+#include <netinet/in.h>
+#endif
+#if  HAVE_SYS_IN_H
+#include <sys/in.h>
+#endif
+#if  HAVE_SYS_INET_H
+#include <sys/inet.h>
+#endif
+#include <netdb.h>
+#if  HAVE_ARPA_NAMESER_H
+#include <arpa/nameser.h>
+#endif
+#if  HAVE_RESOLV_H
+#include <resolv.h>
+#endif], [h_errno = 0;],
+  [AC_MSG_RESULT(yes); AC_DEFINE(HAVE_H_ERRNO)], [AC_MSG_RESULT(no)])])
+
+# I don't really know what will clearly tell whether you have sockets or not,
+#   so I just took a bunch of socket-related functions and stuck them in
+#   a routine.  If it builds and links, I assume I can build sockets code;
+#   otherwise I assume I can't.
+AC_DEFUN(WMS_CHECK_SOCKETS,
+[AC_MSG_CHECKING([for sockets])
+AC_TRY_LINK([#include <sys/types.h>
+#include <sys/socket.h>
+#if  HAVE_NETINET_IN_H
+#include <netinet/in.h>
+#endif
+#if  HAVE_SYS_IN_H
+#include <sys/in.h>
+#endif
+#if  HAVE_SYS_INET_H
+#include <sys/inet.h>
+#endif
+#include <netdb.h>
+#if  HAVE_ARPA_NAMESER_H
+#include <arpa/nameser.h>
+#endif
+#if  HAVE_RESOLV_H
+#include <resolv.h>
+#endif
+#include <sys/utsname.h>
+#include <pwd.h>
+#include <fcntl.h>], [
+struct sockaddr_in sa;
+bind(0,(struct sockaddr *)&sa, sizeof(sa));
+listen(0,2);
+socket(AF_INET,SOCK_STREAM,0);
+gethostbyname("foo");],
+  [AC_MSG_RESULT(yes); AC_DEFINE(HAVE_SOCKETS)], [AC_MSG_RESULT(no)])])
+
+######################################################################
+# Done with my own functions.  On to the real configure file.        #
+######################################################################
+
+export VERSION
+AC_DEFINE_UNQUOTED(VERSION,$VERSION)
+AC_PREFIX_DEFAULT(/usr/games)
+
+dayNum=`echo $date | awk '{ print $1 }'`
+monthNum=`echo $date | awk '{ print $2 }'`
+yearNum=`echo $date | awk '{ print $3 }'`
+monthEnglish=`echo January February March April May June July August September October November December | awk '{ print $'$monthNum' }'`
+monthFrench=`echo Janvier Fevrier Mars Avril Mai Juin Juillet Août Septembre Octobre Novembre Décembre | awk '{ print $'$monthNum' }'`
+DATE="\"$dayNum $monthEnglish $yearNum\""
+DATE_FRENCH="\"$dayNum $monthFrench $yearNum\""
+export DATE
+export DATE_FRENCH
+AC_DEFINE_UNQUOTED(DATE,$DATE)
+AC_DEFINE_UNQUOTED(DATE_FRENCH,$DATE_FRENCH)
+
+AC_PROG_MAKE_SET
+AC_PROG_INSTALL
+AC_PROG_CC
+AC_AIX
+AC_ISC_POSIX
+AC_MINIX
+AC_PROG_CPP
+AC_EXEEXT
+WMS_GET_CFLAGS
+
+AM_CONFIG_HEADER(configure.h)
+AC_SUBST(LIBS)dnl
+AC_SUBST(VERSION)dnl
+AC_SUBST(DATE)dnl
+AC_PROG_RANLIB
+AC_SEARCH_LIBS(cos, m)
+AC_CHECK_LIB(seq,main)
+AC_CHECK_LIB(nsl,main)
+AC_CHECK_LIB(socket,main)
+AC_STDC_HEADERS
+AC_CHECK_HEADERS(memory.h sys/select.h unistd.h assert.h stdlib.h string.h netinet/in.h sys/in.h sys/inet.h arpa/nameser.h resolv.h sys/time.h sys/utsname.h)
+AC_HEADER_DIRENT
+AC_TIME_WITH_SYS_TIME
+AC_CHECK_HEADER(sun/audioio.h, AC_DEFINE(SUN_SOUND))
+if test $ac_cv_header_sun_audioio_h = no; then
+  AC_CHECK_HEADER(linux/soundcard.h, AC_DEFINE(LINUX_SOUND))
+fi
+WMS_CHECK_H_ERRNO
+WMS_CHECK_SOCKETS
+if test "$cross_compiling" = "yes" ; then
+  echo "********* IMPORTANT *************************************************"
+  echo "*** It looks like either you are cross compiling, or configure cannot"
+  echo "***   figure out how to run your C compiler."
+  echo "*** If you are cross compiling, then configure cannot detect the "
+  echo "***   size of various types and the endian style of your machine.  "
+  echo "***   You will have to edit the file obj-${SYSTEM_TYPE}/configure.h "
+  echo "***   by hand."
+  echo "*** If you are NOT cross compiling, then please see the README file"
+  echo "***   for instructions on how to tell ./configure how to run your"
+  echo "***   C compiler."
+  echo "*********************************************************************"
+else
+  AC_CHECK_SIZEOF(short)
+  if test "x$ac_cv_sizeof_short" '=' x0 ; then
+    echo "********* IMPORTANT *************************************************"
+    echo "*** configure cannot figure out how to run your C compiler."
+    echo "*** If you are cross compiling, then configure cannot detect the "
+    echo "***   size of various types and the endian style of your machine.  "
+    echo "***   You will have to edit the file obj-${SYSTEM_TYPE}/configure.h "
+    echo "***   by hand."
+    echo "*** If you are NOT cross compiling, then please see the README file"
+    echo "***   for instructions on how to tell ./configure how to run your"
+    echo "***   C compiler."
+    echo "*********************************************************************"
+    exit 1
+  fi
+  AC_CHECK_SIZEOF(int)
+  AC_CHECK_SIZEOF(long)
+  AC_CHECK_SIZEOF(long long)
+  AC_C_BIGENDIAN
+fi
+AC_CHECK_FUNCS(strerror getdtablesize memmove strcasecmp)
+AC_RETSIGTYPE
+AC_PATH_XTRA
+if test '!' "$no_x" ; then
+  AC_DEFINE(X11_DISP)
+  CFLAGS="$CFLAGS $X_CFLAGS"
+  LIBS="$X_LIBS $X_PRE_LIBS -lX11 $X_EXTRA_LIBS $LIBS"
+else
+  echo "***"
+  echo "*** Sorry, configure cannot find your X includes and libraries."
+  echo "*** Compiling cannot continue until this is fixed."
+  echo "*** If you know where your X11 is installed, try"
+  echo "***   ./configure --x-includes=<DIR> --x-libraries=<DIR>"
+  echo "***"
+  exit 1
+fi
+
+AC_OUTPUT(Makefile man6/Makefile src/gmp/Makefile src/client/Makefile
+src/Makefile wmslib/src/wms/Makefile wmslib/src/but/Makefile
+wmslib/src/abut/Makefile wmslib/src/Makefile wmslib/Makefile 
+grab_cgoban cgoban1.spec)

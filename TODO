@@ -1,0 +1,58 @@
+TODO list for Cgoban 1.9.13
+
+   Right now I've got way too many things to plan on when I'll be doing which
+of them; my head hurts just thinking about all of them.  But I am slowly
+making progress.
+
+   Update on Feb. 27 2002: Not working on this any more. I'm now working on
+cgoban 2 and KGS. If anybody wants to take this over, please let me know.
+
+Bugs to fix:
+	GMP can't play handicap games on a server.
+	When continuing a game, the number of moves left in your byo-yomi
+	  period is wrong at first.
+	Laurent Demailly has this weird bug where it crashes during
+	  gettimeofday().
+	Scrolling rapidly will sometimes mess up the text windows.
+	Running "cgoban -edit buggy.sgf" doesn't pop up an error dialogue.
+
+Features to add:
+	Print games you are editing.
+	Make little logos for open, closed, looking.
+	Make game list window keep up with moves in games your are observing
+	  or playing in.
+	Watch for the output of "who <game>" and update game list.
+	Add sound effects.
+	Score boxes should reflect final score when a server game ends.
+	Make it automatically resume adjourned games in the same window
+	  when they resume.
+	Add windows for each conversation that you are in.
+	Add a way to add/see the "FG" and "DI" SGF codes.
+	Add "-view", like "-edit" but read-only.
+	Allow users to sort the games list.
+	Support the chatter command.
+	Add the equivalent of "Notify".
+	Make it not scroll the text when you're looking at something older.
+	Add tabs to pretty up results output
+	Grey out users so "who 5k-1d o" works well
+	Beep when time running low
+	Warn when your kibitzes are lost because game ended
+	Let users type as you are logging in
+	Let GMP use more than the first two servers
+	Let player change rules of an SGF file
+	Make arrow act same in edit window and edit tool window
+	Add edit tool stuff for inserting nodes
+	When you start a game on one server, automatically become closed to
+	  games on the others.
+	Allow people to save and edit "Look" files.
+	Automatically reconnect when you are logged out.
+	Easier saving games from server windows.
+
+Configuration options to add:
+	Better beep control.
+	Number of lines to keep in the log
+	Allow users to set up function keys to bind to common commands
+
+$Source: /cvsroot/cgoban1/cgoban1/TODO,v $
+$Revision: 1.5 $
+$Date: 2002/06/13 17:51:02 $

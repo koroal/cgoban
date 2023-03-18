@@ -59,6 +59,8 @@ AbutTerm  *abutTerm_create(Abut *abut, ButWin *parent,
 void  abutTerm_destroy(AbutTerm *term)  {
   assert(MAGIC(term));
   MAGIC_UNSET(term);
+  abutSwin_destroy(term->swin);
+  wms_free(term);
 }
 
 

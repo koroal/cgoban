@@ -219,6 +219,7 @@ void  editToolWin_deinit(EditToolWin *etw)  {
     butWin_setPacket(etw->toolWin, NULL);
     butWin_destroy(etw->toolWin);
   }
+  abutSwin_destroy(etw->mapWin);
   MAGIC_UNSET(etw);
 }
 

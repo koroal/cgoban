@@ -407,6 +407,8 @@ static ButOut  destroy(ButWin *win)  {
   clpEntry_setInt(g->clpY, butWin_y(win));
   if (g->pic)
     goPic_destroy(g->pic);
+  if (g->comments)
+    abutTerm_destroy(g->comments);
   if (g->msgBox)
     abutMsg_destroy(g->msgBox, FALSE);
   MAGIC_UNSET(g);

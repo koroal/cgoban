@@ -117,6 +117,7 @@ static ButOut  destroy(But *but)  {
   Txt *t = but->iPacket;
   
   str_deinit(&t->text);
+  wms_free(t);
   return(0);
 }
 

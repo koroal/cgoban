@@ -316,7 +316,9 @@ Cgoban  *cgoban_create(int argc, char *argv[], char *envp[])  {
 void  cgoban_destroy(Cgoban *cg)  {
   assert(MAGIC(cg));
   clp_wFile(cg->clp, clp_getStr(cg->clp, "adfile"), "cgoban");
+  cgbuts_redraw(&cg->cgbuts);
   butEnv_destroy(cg->env);
+  abut_destroy(cg->abut);
   clp_destroy(cg->clp);
   rnd_destroy(cg->rnd);
   str_deinit(&cg->lastDirAccessed);

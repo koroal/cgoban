@@ -160,6 +160,8 @@ void  editInfo_destroy(EditInfo *info, bool propagate)  {
     info->destroy(info, info->packet);
     assert(MAGIC(info));
   }
+  if (info->gameComment)
+    abutTerm_destroy(info->gameComment);
   if (info->win)  {
     cg = info->cg;
     assert(MAGIC(cg));

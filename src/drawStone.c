@@ -206,6 +206,7 @@ void  drawStone_newPics(ButEnv *env, Rnd *rnd, int baseColor,
   XSetFunction(dpy, gc1, GXand);
   XCopyArea(dpy, *maskBitmap, *maskBitmap, gc1, 0,0, size,size, size*4,0);
   XCopyArea(dpy, *maskBitmap, *maskBitmap, gc1, 0,0, size,size, size*5,0);
+  XFreeGC(dpy, gc1);
 }
 
 

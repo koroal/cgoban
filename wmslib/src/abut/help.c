@@ -200,6 +200,8 @@ static ButOut  destroy(ButWin *win)  {
     result = help->destroyCallback(help, help->packet);
   abutSwin_destroy(help->swin);
   MAGIC_UNSET(help);
+  wms_free(help->menuOpts);
+  wms_free(help->textButs);
   wms_free(help);
   return(result);
 }

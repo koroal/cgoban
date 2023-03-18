@@ -236,6 +236,9 @@ But  *butKeytrap_create(ButOut (*func)(But *but, int press), void *uPacket,
   
 
 static ButOut  keytrap_destroy(But *but)  {
+  Keytrap  *k = but->iPacket;
+
+  wms_free(k);
   return(0);
 }
 

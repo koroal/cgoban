@@ -60,11 +60,20 @@ CliPlayerList  *cliPlayerList_init(CliPlayerList *gl, CliData *data)  {
 CliPlayerList  *cliPlayerList_deinit(CliPlayerList *gl)  {
   Cgoban  *cg;
   CliMatch  *m;
+  int  i;
 
   assert(MAGIC(gl));
   cg = gl->data->cg;
-  if (gl->players)
+  if (gl->players) {
+    for (i = 0;  i < gl->maxPlayers;  ++i)  {
+      CliPlayer *p = &gl->players[i];
+      str_deinit(&p->name);
+      str_deinit(&p->rank);
+      str_deinit(&p->idleTime);
+    }
     wms_free(gl->players);
+  }
+  abutSwin_destroy(gl->swin);
   if (gl->win)  {
     clp_setDouble(cg->clp, "client.players.h",
 		  (double)butWin_h(gl->win) / (double)cg->fontH);

@@ -710,6 +710,7 @@ But  *gobanPic_create(Cgbuts *b, ButWin *win, int layer, int flags)  {
   but->uPacket = NULL;
   but->layer = layer;
   but->flags = flags;
+  but_init(but);
   return(but);
 }
 
@@ -754,6 +755,7 @@ But  *stoneGroup_create(Cgbuts *b, ButWin *win, int layer, int flags)  {
   but->uPacket = NULL;
   but->layer = layer;
   but->flags = flags;
+  but_init(but);
   return(but);
 }
 
@@ -832,6 +834,7 @@ But  *toolPic_create(Cgbuts *b, ButWin *win, int layer, int flags)  {
   but->uPacket = NULL;
   but->layer = layer;
   but->flags = flags;
+  but_init(but);
   return(but);
 }
 

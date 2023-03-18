@@ -320,6 +320,14 @@ void  abutMsg_destroy(AbutMsg *msg, bool propagate)  {
       but_destroy(msg->tins[i]);
       but_destroy(msg->tinTitles[i]);
     }
+    wms_free(msg->buts);
+    msg->buts = NULL;
+    if (msg->tins)  {
+      wms_free(msg->tins);
+      wms_free(msg->tinTitles);
+      msg->tins = NULL;
+      msg->tinTitles = NULL;
+    }
   }
   if ((msg->layer == 0) && msg->win)
     butWin_destroy(msg->win);

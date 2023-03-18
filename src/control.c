@@ -264,6 +264,7 @@ static ButOut  destroy(ButWin *win)  {
   assert(MAGIC(ctrl));
   clp_setInt(ctrl->cg->clp, "control.x", butWin_x(win));
   clp_setInt(ctrl->cg->clp, "control.y", butWin_y(win));
+  wms_free(ctrl);
   return(BUTOUT_STOPWAIT);
 }
 

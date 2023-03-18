@@ -469,6 +469,7 @@ static bool  dirScan(AbutFsel *f, const char *path)  {
       }
     }
   }
+  str_deinit(&fName);
   closedir(d);
   if (numDirs > 1)  {
     qsort(dirs, numDirs, sizeof(Str), str_alphaCmp);

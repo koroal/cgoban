@@ -299,7 +299,6 @@ static GobanOut  gridPressed(void *packet, int loc)  {
 		 goBoard_loc2Sgf(eb->game->board, loc));
 	sgf_play(eb->sgf, eb->game, eb->goban->pic, ++eb->currentNodeNum,
 		 NULL);
-	editToolWin_newActiveNode(&eb->tools, eb->sgf->active);
 	writeGobanComments(eb);
       }
     }
@@ -368,6 +367,7 @@ static GobanOut  gridPressed(void *packet, int loc)  {
   }
   editToolWin_newColor(&eb->tools, goGame_whoseMove(eb->game));
   assert(eb->sgf->active != NULL);
+  editToolWin_newActiveNode(&eb->tools, eb->sgf->active);
   sgfMap_changeNode(eb->tools.sgfMap, eb->sgf->active);
   return(result);
 }
@@ -466,20 +466,21 @@ static GobanOut  passPressed(void *packet)  {
 	   (eb->sgf->active->parent->parent->activeChild ==
 	    eb->sgf->active->parent->parent->childH));
     sgf_play(eb->sgf, eb->game, eb->goban->pic, ++eb->currentNodeNum, NULL);
-    editToolWin_newActiveNode(&eb->tools, eb->sgf->active);
     writeGobanComments(eb);
     break;
   case editTool_changeBoard:
     readGobanComments(eb);
     sgf_addNode(eb->sgf);
     clearComments(eb);
-    editToolWin_newActiveNode(&eb->tools, eb->sgf->active);
+    editToolWin_nodeAdded(&eb->tools, eb->sgf->active);
+    ++eb->currentNodeNum;
     writeGobanComments(eb);
     break;
   default:
     break;
   }    
   editToolWin_newColor(&eb->tools, goGame_whoseMove(eb->game));
+  editToolWin_newActiveNode(&eb->tools, eb->sgf->active);
   sgfMap_changeNode(eb->tools.sgfMap, eb->sgf->active);
   return(gobanOut_draw);
 }
@@ -720,6 +721,7 @@ static void  readGobanComments(EditBoard *eb)  {
     assert(eb->sgf->active->parent->activeChild == eb->sgf->active);
   }
   sgfMap_setMapPointer(eb->tools.sgfMap, eb->sgf->active);
+  sgfMap_changeNode(eb->tools.sgfMap, eb->sgf->active);
 }
 
 
@@ -755,16 +757,12 @@ static void  addPattern(EditBoard *eb, GoStone color, int loc)  {
   int  i;
 
   otherEdits = sgfElem_findTypeInNode(eb->sgf->active, sgfType_setBoard);
-  if (otherEdits == NULL)  {
-    /*
-     * We always add a node if there are no other edits, 'cause they
-     *   shouldn't be in the same node as moves.
-     */
+  if (sgfElem_findTypeInNode(eb->sgf->active, sgfType_move) ||
+      sgfElem_findTypeInNode(eb->sgf->active, sgfType_pass)) {
     readGobanComments(eb);
     sgf_addNode(eb->sgf);
     editToolWin_nodeAdded(&eb->tools, eb->sgf->active);
     ++eb->currentNodeNum;
-    editToolWin_newActiveNode(&eb->tools, eb->sgf->active);
     writeGobanComments(eb);
   }
   /*

@@ -110,16 +110,14 @@ GoPic  *goPic_create(Cgoban *cg, void *packet, GoGame *game,
       label[1] = label[0];
       label[2] = '\0';
     }
-    p->letters[i] = butText_create(win, layer+1, 0, label, butText_center);
+    p->letters[i] = butText_create(win, layer+1, BUT_DRAWABLE, label, butText_center);
     butText_setFont(p->letters[i], 1);
-    p->letters[i+size] = butText_create(win, layer+1, 0, label,
-					butText_center);
+    p->letters[i+size] = butText_create(win, layer+1, BUT_DRAWABLE, label, butText_center);
     butText_setFont(p->letters[i+size], 1);
     sprintf(label, "%d", size-i);
-    p->numbers[i] = butText_create(win, layer+1, 0, label, butText_center);
+    p->numbers[i] = butText_create(win, layer+1, BUT_DRAWABLE, label, butText_center);
     butText_setFont(p->numbers[i], 1);
-    p->numbers[i+size] = butText_create(win, layer+1, 0, label,
-					butText_center);
+    p->numbers[i+size] = butText_create(win, layer+1, BUT_DRAWABLE, label, butText_center);
     butText_setFont(p->numbers[i+size], 1);
   }
   return(p);

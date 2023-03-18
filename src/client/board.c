@@ -185,6 +185,8 @@ void  cliBoard_destroy(CliBoard *cli, bool propagate)  {
     cli->destroy(cli, cli->packet);
   }
   cliData_decRef(cli->data);
+  str_deinit(&cli->wName);
+  str_deinit(&cli->bName);
   MAGIC_UNSET(cli);
   wms_free(cli);
 }

@@ -60,7 +60,10 @@ But  *sgfMap_create(Cgbuts *b, ButOut (*callback)(But *but, int newNodeNum),
   map->activeX = map->activeY = 0;
   map->activeCtrX = map->activeCtrY = -1;
   map->els = wms_malloc(sizeof(SgfMapElem));
+  map->els[0].node = NULL;
   map->els[0].flags = 0;
+  map->els[0].type = sgfMap_none;
+  map->els[0].moveNum = 0;
 
   but_init(but);
   relocate(but, sgf->top.activeChild, 0, 0, 0, 0, TRUE);
@@ -377,6 +380,10 @@ static void  drawConn(But *but, uint flags, int x, int y, int fontH)  {
 
 
 static ButOut  destroy(But *but)  {
+  SgfMap  *map = but->iPacket;
+  if (map->els != NULL)
+    wms_free(map->els);
+  wms_free(map);
   return(0);
 }
 
@@ -491,6 +498,8 @@ static void  resizeGraph(SgfMap *map, int newX, int newY)  {
       for (x = map->maxW;  x < newMaxW;  ++x)  {
 	newEls[newX0 + x].node = NULL;
 	newEls[newX0 + x].flags = 0;
+	newEls[newX0 + x].moveNum = 0;
+	newEls[newX0 + x].type = sgfMap_none;
       }
     }
     for (y = map->maxH;  y < newMaxH;  ++y)  {
@@ -498,6 +507,8 @@ static void  resizeGraph(SgfMap *map, int newX, int newY)  {
       for (x = 0;  x < newMaxW;  ++x)  {
 	newEls[newX0 + x].node = NULL;
 	newEls[newX0 + x].flags = 0;
+	newEls[newX0 + x].type = sgfMap_none;
+	newEls[newX0 + x].moveNum = 0;
       }
     }
     if (map->els != NULL)
@@ -690,6 +701,7 @@ void  sgfMap_remap(But *but, Sgf *sgf)  {
     map->els[i].node = NULL;
     map->els[i].flags = 0;
     map->els[i].type = sgfMap_none;
+    map->els[i].moveNum = 0;
   }
   map->mapW = map->mapH = 0;
   relocate(but, sgf->top.activeChild, 0, 0, 0, 0, TRUE);
@@ -739,6 +751,7 @@ void  sgfMap_changeNode(But *but, SgfElem *changed)  {
   assert(changed != NULL);
   me = &map->els[changed->mapX + changed->mapY * map->maxW];
   me->type = sgfMap_none;
+  me->flags &= ~SGFMAPFLAGS_MARKED;
   while (changed->parent && (changed->type != sgfType_node))  {
     switch(changed->type)  {
     case sgfType_move:
@@ -775,13 +788,17 @@ void  sgfMap_changeNode(But *but, SgfElem *changed)  {
     changed = changed->parent;
     assert(changed != NULL);
   }
-  if (changed->parent)  {
-    changed = changed->parent;
-    assert(changed != NULL);
-    me->moveNum = map->els[changed->mapX + changed->mapY * map->maxW].moveNum +
-      moveAdd;
-  } else
-    me->moveNum = moveAdd;
+  if (moveAdd) {
+    SgfElem  *parent = changed->parent;
+    while (parent)  {
+      if (parent->type == sgfType_move || parent->type == sgfType_pass)  {
+        moveAdd += map->els[parent->mapX + parent->mapY * map->maxW].moveNum;
+        break;
+      }
+      parent = parent->parent;
+    }
+  }
+  me->moveNum = moveAdd;
   assert(changed != NULL);
   redrawEl(but, changed->mapX, changed->mapY);
 }

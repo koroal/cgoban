@@ -293,8 +293,16 @@ void  butEnv_destroy(ButEnv *env)  {
       butRnet_destroy(env->partners[i], "Remote user has quit the program.");
     }
   }
-  if (env->fonts != NULL)
+  for (i = 0; i < 3; ++i) {
+    if (env->fCallbacks[i] != NULL) {
+      wms_free(env->fCallbacks[i]);
+    }
+  }
+  if (env->fonts != NULL) {
+    for (i = 0; i < env->numFonts; ++i)
+      XFreeFont(env->dpy, env->fonts[i]);
     wms_free(env->fonts);
+  }
   if (env->colors != NULL)
     wms_free(env->colors);
   if (env->colorPmaps != NULL)
@@ -304,6 +312,8 @@ void  butEnv_destroy(ButEnv *env)  {
   if (env->protocol != NULL)
     wms_free(env->protocol);
   MAGIC_UNSET(env);
+  XFreeGC(env->dpy, env->gc2);
+  XFreeGC(env->dpy, env->gc);
   XCloseDisplay(env->dpy);
   wms_free(env);
 }

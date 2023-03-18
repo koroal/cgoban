@@ -336,6 +336,8 @@ void  butWin_activate(ButWin *win)  {
     protocols[0] = but_wmDeleteWindow;
     XSetWMProtocols(dpy, win->win, protocols, 1);
     XMapWindow(dpy, win->win);
+    XFree(windowName.value);
+    XFree(iconName.value);
     wms_free(annoyance);
   }
   XFree(sizeHints);
@@ -368,7 +370,6 @@ ButOut  butWin_delete(ButWin *win)  {
     win->destroy = NULL;
   }
   butWin_findButSetInRegion(win, int_min/2,int_min/2, int_max,int_max, &bset);
-  but_inEvent = TRUE;
   if ((bset.numButs != 0) || (win->butsNoDraw.numButs != 0))  {
     for (i = 0;  i < bset.numButs;  ++i)  {
       but_destroy(bset.buts[i]);
@@ -382,7 +383,6 @@ ButOut  butWin_delete(ButWin *win)  {
   }
   if (win->parent)
     butCan_winDead(win);
-  but_inEvent = FALSE;
   butSet_destroy(&bset);
   butSet_destroy(&win->butsNoDraw);
   /* Remove all timers from the timer list. */
@@ -412,6 +412,8 @@ ButOut  butWin_delete(ButWin *win)  {
   butWin_rmFromTable(win);
   MAGIC_UNSET(&win->butsNoDraw);
   MAGIC_UNSET(win);
+  if (win->redraws)
+    wms_free(win->redraws);
   wms_free(win);
   return(result);
 }

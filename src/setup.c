@@ -214,6 +214,8 @@ void  setup_destroy(Setup *setup, bool propagate)  {
   assert(MAGIC(setup));
   if (propagate)
     setup->destroyCallback(setup, setup->packet);
+  if (setup->swin)
+    abutSwin_destroy(setup->swin);
   if (setup->win)
     butWin_destroy(setup->win);
   MAGIC_UNSET(setup);

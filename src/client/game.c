@@ -89,6 +89,7 @@ CliGameList  *cliGameList_deinit(CliGameList *gl)  {
 			    butWin_getWStep(gl->win))));
     clp_setInt(cg->clp, "client.games.x", butWin_x(gl->win));
     clp_setInt(cg->clp, "client.games.y", butWin_y(gl->win));
+    abutSwin_destroy(gl->swin);
     butWin_setDestroy(gl->win, NULL);
     butWin_destroy(gl->win);
   }

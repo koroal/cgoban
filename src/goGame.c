@@ -150,7 +150,8 @@ bool  goGame_move(GoGame *game, GoStone moveColor, int move, GoTimer *timer)  {
     if (timer->timeLeft < 0)
       game->moves[game->moveNum].time.timeLeft = 0;
   } else {
-    game->moves[game->moveNum].time.timeLeft = 0;
+    GoTimer  timer = {0};
+    game->moves[game->moveNum].time = timer;
   }
   /*
    * Place the move on the board.

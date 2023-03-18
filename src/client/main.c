@@ -192,6 +192,7 @@ void  cliMain_destroy(CliMain *cMain)  {
     butWin_setDestroy(cMain->win, NULL);
     butWin_destroy(cMain->win);
   }
+  abutTerm_destroy(cMain->script);
   cliGameList_deinit(&cMain->gameList);
   cliPlayerList_deinit(&cMain->playerList);
   cliLook_deinit(&cMain->look);
